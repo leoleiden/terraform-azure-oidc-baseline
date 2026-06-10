@@ -1,0 +1,13 @@
+Структура папок тома Windows 10
+Серийный номер тома: 0000006C 2450:3723
+C:\USERS\LEIDENLOKI\TERRAFORM-AZURE-OIDC-BASELINE
+│   .gitignore
+│   .terraform.lock.hcl
+│   main.tf
+│   oidc_tree.txt
+│   README.md
+│   
+└───.github
+    └───workflows
+            terraform-validate.yml
+            
