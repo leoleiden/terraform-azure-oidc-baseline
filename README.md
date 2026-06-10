@@ -15,9 +15,13 @@ This repository provides an enterprise-grade Infrastructure as Code (IaC) baseli
 * **CI/CD Integration:** Automated workflow validating the OIDC handshake and generating infrastructure plans without exposing secrets.
 
 ## 📊 CI/CD Validation (Passwordless Execution)
-The workflow below proves the successful federated authentication between GitHub Actions and Azure Active Directory, establishing the remote state connection and executing a `terraform plan` securely.
+The workflow below proves the successful federated authentication between GitHub Actions and Azure Active Directory, establishing the remote state connection and executing a `terraform plan` securely with zero static credentials.
 
-![OIDC Pipeline Success](images/01_oidc_pipeline.png)
+### 1. OIDC Authentication & Backend Initialization
+![OIDC Init](images/01_oidc_init.png)
+
+### 2. Infrastructure Plan & State Verification
+![Terraform Plan](images/02_oidc_plan.png)
 
 ---
 *This blueprint demonstrates DevSecOps best practices for managing cloud identity and protecting critical infrastructure state data.*
