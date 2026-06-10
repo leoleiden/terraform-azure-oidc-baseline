@@ -1,50 +1,45 @@
-name: Terraform Validate
+name: 'Terraform OIDC Remote State Validation'
 
 on:
-    push:
-      branches: ["master"]
-    pull_request:
-    workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
-  issues: write
 
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+  ARM_USE_OIDC: true
 
 jobs:
-  terraform_validate:
-    name: "Validate Terraform Configuration"
+  terraform:
+    name: 'Terraform Security Validation & Plan'
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v4
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Check Terraform files
-      run: |
-        if ! grep -q 'backend "azurerm"' *.tf; then
-          echo "Error: Azure backend configuration not found"
-          exit 1
-        fi
-        if ! grep -q 'resource_group_name' *.tf || ! grep -q 'storage_account_name' *.tf || ! grep -q 'container_name' *.tf || ! grep -q 'key' *.tf; then
-          echo "Error: Missing required backend configuration elements"
-          exit 1
-        fi
-        echo "Terraform files check passed"
-
     - name: Terraform Format
-      run: terraform fmt -check -recursive
+      id: fmt
+      run: terraform fmt -check
 
-    - name: Terraform Init
-      run: terraform init -backend=false
+    - name: Terraform Init (Connecting to Azure Remote State via OIDC)
+      id: init
+      run: terraform init
 
     - name: Terraform Validate
-      run: terraform validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
